@@ -8,7 +8,7 @@ const Login = () => {
     let handleGoogle = () => {
         console.log("ok google");
         signInWithPopup(auth, provider)
-            .than(result => {
+            .then(result => {
                 console.log(result)
             })
             .catch(error => {
