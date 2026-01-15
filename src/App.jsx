@@ -1,13 +1,13 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router'
 import './App.css'
-import Navbar from './components/Navbar'
 import Login from './components/Login'
 import SignUp from './components/SignUp'
+import Home from './pages/Home'
 
 
 let router = createBrowserRouter(createRoutesFromElements(
   <Route>
-    <Route path="/" element={<Navbar />} />
+    <Route path="/" element={<Home></Home>} />
     <Route path="login" element={<Login />} />
     <Route path="signup" element={<SignUp />} />
   </Route>
