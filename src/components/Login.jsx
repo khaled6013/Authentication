@@ -1,5 +1,4 @@
-import { log } from 'firebase/firestore/pipelines';
-import React from 'react';
+import { Link } from "react-router";
 
 const Login = () => {
     let handleLogin = () => {
@@ -50,9 +49,9 @@ const Login = () => {
             <a href="#" className="text-gray-600 hover:text-black hover:underline">
               Forgot Password?
             </a>
-            <a href="#" className="text-gray-600 hover:text-black hover:underline">
+            <Link to='/signup' href="#" className="text-gray-600 hover:text-black hover:underline">
               Create an account
-            </a>
+            </Link>
           </div>
         </form>
       </div>
