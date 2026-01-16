@@ -2,15 +2,19 @@ import React from 'react';
 import { Link } from 'react-router';
 
 const SignUp = () => {
-    let handleSignUp = () => { 
-        console.log("signUp")
+    let handleSubmit = e => { 
+        e.preventDefault();
+        let name = e.target.name.value
+        let email = e.target.email.value
+        let password = e.target.password.value
+        console.log(name,email,password)
     }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md border border-gray-200">
         <h2 className="text-3xl font-bold mb-6 text-center text-black">Create Account</h2>
         
-        <form>
+        <form onSubmit={handleSubmit}>
           {/* Name Field */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="name">
@@ -19,6 +23,7 @@ const SignUp = () => {
             <input
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200"
               id="name"
+              name='name'
               type="text"
               placeholder="John Doe"
             />
@@ -32,6 +37,7 @@ const SignUp = () => {
             <input
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200"
               id="email"
+              name='email'
               type="email"
               placeholder="john@example.com"
             />
@@ -45,15 +51,17 @@ const SignUp = () => {
             <input
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200"
               id="password"
+              name='password'
               type="password"
               placeholder="Create a password"
             />
           </div>
 
           {/* Submit Button */}
-          <button onClick={handleSignUp}
+          <button 
             className="w-full bg-black text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-800 transition duration-300 cursor-pointer"
-            type="button"
+            type="submit"
+            name='submit'
           >
             Sign Up
           </button>

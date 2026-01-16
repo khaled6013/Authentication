@@ -32,11 +32,11 @@ const Login = () => {
             })
     }
 
-    let handleSubmit = e =>{
+    let handleSubmit = e => {
         e.preventDefault();
         let email = e.target.email.value
         let password = e.target.password.value
-        console.log(email ,password)
+        console.log(email, password)
     }
 
     return (
