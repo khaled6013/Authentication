@@ -1,11 +1,12 @@
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import React, { useState } from 'react';
 import { Link } from 'react-router';
 import { auth } from './firbase/firebase';
 
 const Login = () => {
-    let [man , setMan] = useState(null)
+    let [man, setMan] = useState(null)
     const provider = new GoogleAuthProvider();
+    const githubProvider = new GithubAuthProvider();
 
     let handleGoogle = () => {
         console.log("ok google");
@@ -19,8 +20,16 @@ const Login = () => {
                 // setMan(error.user)
             })
     }
+    
     let handleGithub = () => {
         console.log("GitHub login clicked");
+        signInWithPopup(auth, githubProvider)
+            .then(result => {
+                console.log(result)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     return (
@@ -55,7 +64,7 @@ const Login = () => {
                     Sign in with GitHub
                 </button>
 
-                {/* Divider with Text */}
+
                 <div className="flex items-center justify-between mb-6">
                     <div className="w-full h-px bg-gray-300"></div>
                     <span className="px-3 text-gray-500 text-sm">OR</span>
