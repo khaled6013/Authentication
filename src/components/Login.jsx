@@ -20,7 +20,7 @@ const Login = () => {
                 // setMan(error.user)
             })
     }
-    
+
     let handleGithub = () => {
         console.log("GitHub login clicked");
         signInWithPopup(auth, githubProvider)
@@ -30,6 +30,13 @@ const Login = () => {
             .catch(error => {
                 console.log(error)
             })
+    }
+
+    let handleSubmit = e =>{
+        e.preventDefault();
+        let email = e.target.email.value
+        let password = e.target.password.value
+        console.log(email ,password)
     }
 
     return (
@@ -63,15 +70,13 @@ const Login = () => {
                     </svg>
                     Sign in with GitHub
                 </button>
-
-
                 <div className="flex items-center justify-between mb-6">
                     <div className="w-full h-px bg-gray-300"></div>
                     <span className="px-3 text-gray-500 text-sm">OR</span>
                     <div className="w-full h-px bg-gray-300"></div>
                 </div>
 
-                <form>
+                <form onSubmit={handleSubmit}>
                     {/* Email Field */}
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">
@@ -80,6 +85,7 @@ const Login = () => {
                         <input
                             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200"
                             id="email"
+                            name='email'
                             type="email"
                             placeholder="Enter your email"
                         />
@@ -93,6 +99,7 @@ const Login = () => {
                         <input
                             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200"
                             id="password"
+                            name='password'
                             type="password"
                             placeholder="Enter your password"
                         />
@@ -101,7 +108,8 @@ const Login = () => {
                     {/* Submit Button */}
                     <button
                         className="w-full bg-black text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-800 transition duration-300 cursor-pointer"
-                        type="button"
+                        type="Submit"
+                        value="Submit"
                     >
                         Login
                     </button>
