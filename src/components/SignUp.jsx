@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
+// import { Link } from 'react-router-dom';
+import {
+  GithubAuthProvider,
+  GoogleAuthProvider,
+  signInWithPopup
+} from 'firebase/auth';
+import {auth} from './firbase/firebase'
 import { Link } from 'react-router';
 
 const SignUp = () => {
   const [passwordError, setPasswordError] = useState('');
+  const googleProvider = new GoogleAuthProvider();
+  const githubProvider = new GithubAuthProvider();
+
   let handleGoogle = () => {
     console.log("ok google");
-    signInWithPopup(auth, provider)
+    signInWithPopup(auth, googleProvider)
       .then(result => {
         console.log(result);
         // setMan(result.user)
