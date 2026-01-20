@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 // import { Link } from 'react-router-dom';
 import {
   createUserWithEmailAndPassword,
@@ -12,6 +14,8 @@ import { Link } from 'react-router';
 const SignUp = () => {
   const [passwordError, setPasswordError] = useState('');
   const [error, setError] = useState('')
+  const [showPassword, setShowPassword] = useState(false);
+
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
 
@@ -55,7 +59,7 @@ const SignUp = () => {
         console.log(result)
       })
       .catch(error => {
-        console.log(error); 
+        console.log(error);
         if (error.code === "auth/email-already-in-use") {
           setError("This email is already registered. Please login.");
         } else if (error.code === "auth/invalid-email") {
@@ -134,21 +138,33 @@ const SignUp = () => {
           </div>
 
           {/* Password Field */}
-          <div className="mb-6">
+          <div className="mb-6 relative">
             <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="password">
               Password
             </label>
+
             <input
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200 ${passwordError ? 'border-red-500' : ''}`}
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200 ${passwordError ? 'border-red-500' : ''
+                }`}
               id="password"
-              name='password'
-              type="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Create a password"
             />
+
+            {/* Eye Icon */}
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-10.5 cursor-pointer text-gray-600"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+
             {passwordError && (
               <p className="text-red-500 text-xs mt-1 italic">{passwordError}</p>
             )}
           </div>
+
           {error && (
             <p className="text-red-600 text-sm mb-4 text-center">
               {error}
