@@ -6,11 +6,12 @@ import {
   GoogleAuthProvider,
   signInWithPopup
 } from 'firebase/auth';
-import {auth} from './firbase/firebase'
+import { auth } from './firbase/firebase'
 import { Link } from 'react-router';
 
 const SignUp = () => {
   const [passwordError, setPasswordError] = useState('');
+  const [error, setError] = useState('')
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
 
@@ -40,6 +41,7 @@ const SignUp = () => {
   let handleSubmit = e => {
     e.preventDefault();
     setPasswordError('');
+    setError('')
     let name = e.target.name.value;
     let email = e.target.email.value;
     let password = e.target.password.value;
@@ -49,12 +51,21 @@ const SignUp = () => {
     }
     createUserWithEmailAndPassword(auth, email, password)
 
-    .then(result =>{
-      console.log(result)
-    })
-    .catch(result =>{
-      console.log(result)
-    })
+      .then(result => {
+        console.log(result)
+      })
+      .catch(error => {
+        console.log(error); 
+        if (error.code === "auth/email-already-in-use") {
+          setError("This email is already registered. Please login.");
+        } else if (error.code === "auth/invalid-email") {
+          setError("Please enter a valid email address.");
+        } else if (error.code === "auth/weak-password") {
+          setError("Password should be at least 6 characters.");
+        } else {
+          setError(error.message);
+        }
+      });
   }
 
   return (
@@ -138,6 +149,12 @@ const SignUp = () => {
               <p className="text-red-500 text-xs mt-1 italic">{passwordError}</p>
             )}
           </div>
+          {error && (
+            <p className="text-red-600 text-sm mb-4 text-center">
+              {error}
+            </p>
+          )}
+
 
           {/* Submit Button */}
           <button
