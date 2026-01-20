@@ -2,11 +2,12 @@ import { createUserWithEmailAndPassword, GithubAuthProvider, GoogleAuthProvider,
 import React, { useState } from 'react';
 import { Link } from 'react-router';
 import { auth } from './firbase/firebase';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
     let [man, setMan] = useState(null);
     const [passwordError, setPasswordError] = useState('');
-    
+    const [showPassword, setShowPassword] = useState(false);
     const provider = new GoogleAuthProvider();
     const githubProvider = new GithubAuthProvider();
 
@@ -41,7 +42,7 @@ const Login = () => {
         let password = e.target.password.value;
         if (password.length < 8) {
             setPasswordError('Password must be at least 8 characters long');
-            return; 
+            return;
         }
         createUserWithEmailAndPassword(auth, email, password)
             .then(result => {
@@ -105,18 +106,28 @@ const Login = () => {
                     </div>
 
                     {/* Password Field */}
-                    <div className="mb-6">
+                    <div className="mb-6 relative">
                         <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="password">
                             Password
                         </label>
+
                         <input
-                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200 ${passwordError ? 'border-red-500' : ''}`}
+                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200 ${passwordError ? 'border-red-500' : ''
+                                }`}
                             id="password"
-                            name='password'
-                            type="password"
-                            placeholder="Enter your password"
+                            name="password"
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Create a password"
                         />
-                        {/* Error Message Display */}
+
+                        {/* Eye Icon */}
+                        <span
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-4 top-10.5 cursor-pointer text-gray-600"
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </span>
+
                         {passwordError && (
                             <p className="text-red-500 text-xs mt-1 italic">{passwordError}</p>
                         )}
