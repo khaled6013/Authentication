@@ -56,9 +56,21 @@ const Login = () => {
                 console.log(result.user)
             })
             .catch(error => {
-                console.log(error)
-                setError(error.message)
-            })
+                console.log(error.code);
+
+                if (error.code === "auth/user-not-found") {
+                    setError("No account found. Please create an account first.");
+                }
+                else if (error.code === "auth/wrong-password") {
+                    setError("Wrong password. Please try again.");
+                }
+                else if (error.code === "auth/invalid-email") {
+                    setError("Please enter a valid email address.");
+                }
+                else {
+                    setError("Something went wrong. Please try again.");
+                }
+            });
     }
 
     return (
