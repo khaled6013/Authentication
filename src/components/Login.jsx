@@ -1,13 +1,14 @@
-import { createUserWithEmailAndPassword, GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GithubAuthProvider, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import React, { useState } from 'react';
 import { Link } from 'react-router';
 import { auth } from './firbase/firebase';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
-    let [man, setMan] = useState(null);
+    const [emailError, setEmailError] = useState('')
     const [passwordError, setPasswordError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState('')
     const provider = new GoogleAuthProvider();
     const githubProvider = new GithubAuthProvider();
 
@@ -38,18 +39,25 @@ const Login = () => {
     let handleSubmit = e => {
         e.preventDefault();
         setPasswordError('');
+        setError('')
+        setEmailError('')
         let email = e.target.email.value;
+        if (!email) {
+            setEmailError("Please enter a valid email address")
+            return;
+        }
         let password = e.target.password.value;
         if (password.length < 8) {
             setPasswordError('Password must be at least 8 characters long');
             return;
         }
-        createUserWithEmailAndPassword(auth, email, password)
+        signInWithEmailAndPassword(auth, email, password)
             .then(result => {
-                console.log(result)
+                console.log(result.user)
             })
             .catch(error => {
                 console.log(error)
+                setError(error.message)
             })
     }
 
@@ -103,6 +111,13 @@ const Login = () => {
                             type="email"
                             placeholder="Enter your email"
                         />
+                        {
+                            emailError && (
+                                <p className="text-red-500 text-xs mt-1 italic">
+                                    {emailError}
+                                </p>
+                            )
+                        }
                     </div>
 
                     {/* Password Field */}
@@ -141,6 +156,11 @@ const Login = () => {
                     >
                         Login
                     </button>
+                    {error && (
+                        <p className="text-red-600 text-sm mt-3 text-center">
+                            {error}
+                        </p>
+                    )}
 
                     {/* Footer Links */}
                     <div className="mt-4 text-center flex justify-between text-sm">

@@ -15,6 +15,9 @@ const SignUp = () => {
   const [passwordError, setPasswordError] = useState('');
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false);
+  const [nameError, setNameError] = useState('');
+  const [emailError , setEmailError] = useState('')
+
 
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
@@ -46,8 +49,18 @@ const SignUp = () => {
     e.preventDefault();
     setPasswordError('');
     setError('')
-    let name = e.target.name.value;
+    setNameError('')
+    setEmailError('')
+    let name = e.target.name.value.trim();
+    if (!name) {
+      setNameError("Name is required");
+      return;
+    }
     let email = e.target.email.value;
+    if(!email){
+      setEmailError("Please enter a valid email address")
+      return;
+    }
     let password = e.target.password.value;
     if (password.length < 8) {
       setPasswordError('Password must be at least 8 characters long');
@@ -114,14 +127,23 @@ const SignUp = () => {
             <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="name">
               Full Name
             </label>
+
             <input
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200"
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition duration-200 ${nameError ? 'border-red-500' : ''
+                }`}
               id="name"
-              name='name'
+              name="name"
               type="text"
               placeholder="John Doe"
             />
+
+            {nameError && (
+              <p className="text-red-500 text-xs mt-1 italic">
+                {nameError}
+              </p>
+            )}
           </div>
+
 
           {/* Email Field */}
           <div className="mb-4">
@@ -135,6 +157,13 @@ const SignUp = () => {
               type="email"
               placeholder="john@example.com"
             />
+            {
+              emailError && (
+                <p className="text-red-500 text-xs mt-1 italic">
+                  {emailError}
+                </p>
+              )
+            }
           </div>
 
           {/* Password Field */}
