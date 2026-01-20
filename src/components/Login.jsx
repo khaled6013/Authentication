@@ -56,21 +56,27 @@ const Login = () => {
                 console.log(result.user)
             })
             .catch(error => {
-                console.log(error.code);
-
+                console.log("Error Code:", error.code); 
                 if (error.code === "auth/user-not-found") {
                     setError("No account found. Please create an account first.");
                 }
                 else if (error.code === "auth/wrong-password") {
                     setError("Wrong password. Please try again.");
                 }
+                else if (error.code === "auth/invalid-credential") {
+                    setError("Invalid email or password.");
+                }
                 else if (error.code === "auth/invalid-email") {
                     setError("Please enter a valid email address.");
+                }
+                else if (error.code === "auth/too-many-requests") {
+                    setError("Too many failed attempts. Please try again later.");
                 }
                 else {
                     setError("Something went wrong. Please try again.");
                 }
             });
+
     }
 
     return (
