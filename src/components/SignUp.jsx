@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 // import { Link } from 'react-router-dom';
 import {
+  createUserWithEmailAndPassword,
   GithubAuthProvider,
   GoogleAuthProvider,
   signInWithPopup
@@ -46,7 +47,14 @@ const SignUp = () => {
       setPasswordError('Password must be at least 8 characters long');
       return;
     }
-    console.log(name, email, password);
+    createUserWithEmailAndPassword(auth, email, password)
+
+    .then(result =>{
+      console.log(result)
+    })
+    .catch(result =>{
+      console.log(result)
+    })
   }
 
   return (
