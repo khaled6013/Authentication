@@ -14,7 +14,6 @@ const Login = () => {
     const provider = new GoogleAuthProvider();
     const githubProvider = new GithubAuthProvider();
 
-    // অলরেডি লগইন থাকলে হোম পেজে পাঠাবে
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
