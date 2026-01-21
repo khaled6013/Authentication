@@ -1,16 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
-// import { Link } from 'react-router-dom';
-import {
-  createUserWithEmailAndPassword,
-  GithubAuthProvider,
-  GoogleAuthProvider,
-  signInWithPopup,
-  updateProfile
-} from 'firebase/auth';
+import { createUserWithEmailAndPassword, GithubAuthProvider, GoogleAuthProvider, signInWithPopup, updateProfile, onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firbase/firebase'
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 const SignUp = () => {
   const [passwordError, setPasswordError] = useState('');
@@ -18,66 +10,49 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [nameError, setNameError] = useState('');
   const [emailError , setEmailError] = useState('')
-
-
+  
+  const navigate = useNavigate();
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        if (currentUser) {
+            navigate('/');
+        }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
+
   let handleGoogle = () => {
-    console.log("ok google");
     signInWithPopup(auth, googleProvider)
-      .then(result => {
-        console.log(result);
-        // setMan(result.user)
-      })
-      .catch(error => {
-        console.log(error)
-        // setMan(error.user)
-      })
+      .then(result => navigate('/'))
+      .catch(error => console.log(error))
   }
 
   let handleGithub = () => {
-    console.log("GitHub login clicked");
     signInWithPopup(auth, githubProvider)
-      .then(result => {
-        console.log(result)
-      })
-      .catch(error => {
-        console.log(error)
-      })
+      .then(result => navigate('/'))
+      .catch(error => console.log(error))
   }
+
   let handleSubmit = e => {
     e.preventDefault();
-    setPasswordError('');
-    setError('')
-    setNameError('')
-    setEmailError('')
+    setPasswordError(''); setError(''); setNameError(''); setEmailError('');
     let name = e.target.name.value.trim();
-    if (!name) {
-      setNameError("Name is required");
-      return;
-    }
+    if (!name) { setNameError("Name is required"); return; }
     let email = e.target.email.value;
-    if(!email){
-      setEmailError("Please enter a valid email address")
-      return;
-    }
+    if(!email){ setEmailError("Please enter a valid email address"); return; }
     let password = e.target.password.value;
-    if (password.length < 8) {
-      setPasswordError('Password must be at least 8 characters long');
-      return;
-    }
-    createUserWithEmailAndPassword(auth, email, password)
+    if (password.length < 8) { setPasswordError('Password must be at least 8 characters long'); return; }
 
+    createUserWithEmailAndPassword(auth, email, password)
       .then(result => {
-        console.log(result)
-        const profile = {
-            displayName : name,
-        }
-       updateProfile(auth.currentUser ,profile )
-       .than(()=>{
-        console.log("user name")
-       })
+        updateProfile(auth.currentUser, { displayName: name })
+           .then(() => {
+             navigate('/login'); 
+           })
+           .catch((err) => console.log(err));
       })
       .catch(error => {
         console.log(error);
@@ -98,12 +73,8 @@ const SignUp = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md border border-gray-200">
         <h2 className="text-3xl font-bold mb-6 text-center text-black">Create Account</h2>
 
-        {/* Google Login Button */}
-        <button onClick={handleGoogle}
-          className="w-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 font-semibold py-2.5 px-4 rounded-lg hover:bg-gray-50 transition duration-300 mb-3 cursor-pointer"
-          type="button"
-        >
-          {/* Google SVG Icon */}
+        {/* Google Login Button with Icon */}
+        <button onClick={handleGoogle} className="w-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 font-semibold py-2.5 px-4 rounded-lg hover:bg-gray-50 transition duration-300 mb-3 cursor-pointer" type="button">
           <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
@@ -113,117 +84,49 @@ const SignUp = () => {
           Sign in with Google
         </button>
 
-        {/* GitHub Login Button */}
-        <button onClick={handleGithub}
-          className="w-full flex items-center justify-center bg-[#24292F] text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-[#24292F]/90 transition duration-300 mb-6 cursor-pointer"
-          type="button"
-        >
-          {/* GitHub SVG Icon */}
+        {/* GitHub Login Button with Icon */}
+        <button onClick={handleGithub} className="w-full flex items-center justify-center bg-[#24292F] text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-[#24292F]/90 transition duration-300 mb-6 cursor-pointer" type="button">
           <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
           </svg>
           Sign in with GitHub
         </button>
+
         <div className="flex items-center justify-between mb-6">
           <div className="w-full h-px bg-gray-300"></div>
           <span className="px-3 text-gray-500 text-sm">OR</span>
           <div className="w-full h-px bg-gray-300"></div>
         </div>
+
         <form onSubmit={handleSubmit}>
-          {/* Name Field */}
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="name">
-              Full Name
-            </label>
-
-            <input
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition duration-200 ${nameError ? 'border-red-500' : ''
-                }`}
-              id="name"
-              name="name"
-              type="text"
-              placeholder="John Doe"
-            />
-
-            {nameError && (
-              <p className="text-red-500 text-xs mt-1 italic">
-                {nameError}
-              </p>
-            )}
+            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="name">Full Name</label>
+            <input className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition duration-200 ${nameError ? 'border-red-500' : ''}`} id="name" name="name" type="text" placeholder="John Doe" />
+            {nameError && <p className="text-red-500 text-xs mt-1 italic">{nameError}</p>}
           </div>
 
-
-          {/* Email Field */}
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">
-              Email Address
-            </label>
-            <input
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200"
-              id="email"
-              name='email'
-              type="email"
-              placeholder="john@example.com"
-            />
-            {
-              emailError && (
-                <p className="text-red-500 text-xs mt-1 italic">
-                  {emailError}
-                </p>
-              )
-            }
+            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">Email Address</label>
+            <input className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200" id="email" name='email' type="email" placeholder="john@example.com" />
+            {emailError && <p className="text-red-500 text-xs mt-1 italic">{emailError}</p>}
           </div>
 
-          {/* Password Field */}
           <div className="mb-6 relative">
-            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="password">
-              Password
-            </label>
-
-            <input
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200 ${passwordError ? 'border-red-500' : ''
-                }`}
-              id="password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Create a password"
-            />
-
-            {/* Eye Icon */}
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-10.5 cursor-pointer text-gray-600"
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="password">Password</label>
+            <input className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition duration-200 ${passwordError ? 'border-red-500' : ''}`} id="password" name="password" type={showPassword ? "text" : "password"} placeholder="Create a password" />
+            <span onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-10.5 cursor-pointer text-gray-600">
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
-
-            {passwordError && (
-              <p className="text-red-500 text-xs mt-1 italic">{passwordError}</p>
-            )}
+            {passwordError && <p className="text-red-500 text-xs mt-1 italic">{passwordError}</p>}
           </div>
 
-          {error && (
-            <p className="text-red-600 text-sm mb-4 text-center">
-              {error}
-            </p>
-          )}
+          {error && <p className="text-red-600 text-sm mb-4 text-center">{error}</p>}
 
+          <button className="w-full bg-black text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-800 transition duration-300 cursor-pointer" type="submit" name='submit'>Sign Up</button>
 
-          {/* Submit Button */}
-          <button
-            className="w-full bg-black text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-800 transition duration-300 cursor-pointer"
-            type="submit"
-            name='submit'
-          >
-            Sign Up
-          </button>
-
-          {/* Footer Text */}
           <p className="text-center text-gray-600 text-sm mt-4">
             Already have an account?{' '}
-            <Link to="/login" className="font-bold text-black hover:underline">
-              Log in
-            </Link>
+            <Link to="/login" className="font-bold text-black hover:underline">Log in</Link>
           </p>
         </form>
       </div>
