@@ -6,7 +6,8 @@ import {
   createUserWithEmailAndPassword,
   GithubAuthProvider,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  updateProfile
 } from 'firebase/auth';
 import { auth } from './firbase/firebase'
 import { Link } from 'react-router';
@@ -70,6 +71,13 @@ const SignUp = () => {
 
       .then(result => {
         console.log(result)
+        const profile = {
+            displayName : name,
+        }
+       updateProfile(auth.currentUser ,profile )
+       .than(()=>{
+        console.log("user name")
+       })
       })
       .catch(error => {
         console.log(error);
